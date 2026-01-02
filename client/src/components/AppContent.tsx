@@ -6,7 +6,7 @@ import { ProjectDetails } from "./ProjectDetails";
 import { DeskReservation } from "./DeskReservation";
 import { LabAvailability } from "./LabAvailability";
 import { MeetingRoomReservation } from "./MeetingRoomReservation";
-import { Reservation } from "./Reservation";
+// Reservation component import removed to avoid name collision with Reservation type
 import { MyReservations } from "./MyReservations";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Toaster } from "./ui/sonner";
@@ -89,7 +89,7 @@ export default function AppContent() {
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
-  const [reservations, setReservations] = useState<Reservation[]>([
+  const [reservations, setReservations] = useState<any[]>([
     {
       id: "1",
       type: "desk",
@@ -136,8 +136,8 @@ export default function AppContent() {
 
   const refreshMyProjects = async () => {
     try {
-      const myProjects = await projectApi.getMyProjects();
-      setProjects(myProjects);
+      const myProjects = await projectApi.listMyProjects();
+      setProjects(myProjects as unknown as Project[]);
     } catch (error) {
       console.error("Error fetching projects:", error);
       toast.error("Failed to fetch projects");
@@ -146,13 +146,60 @@ export default function AppContent() {
 
   const handleAssignEvaluation = async (projectId: string, evaluation: Evaluation) => {
     try {
-      await evaluationApi.createEvaluation(evaluation);
+      // If caller provides a full evaluation object, update it
+      if ((evaluation as any).id) {
+        await evaluationApi.update((evaluation as any).id, evaluation as any);
+      } else {
+        await evaluationApi.create({ projectId, assessorRole: 'Supervisor' });
+      }
       toast.success("Evaluation assigned successfully");
       refreshMyProjects();
     } catch (error) {
       console.error("Error assigning evaluation:", error);
       toast.error("Failed to assign evaluation");
     }
+  };
+
+  const handleCreateEvaluationAssignment = async (projectId: string, facultyName: string, facultyId: string) => {
+    try {
+      await evaluationApi.create({ projectId, assessorRole: 'Supervisor', assessorId: facultyId, assessorName: facultyName });
+      toast.success('Assigned for evaluation');
+      refreshMyProjects();
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to assign');
+    }
+  };
+
+  const handleSubmitEvaluation = async (evaluation: Evaluation) => {
+    try {
+      if ((evaluation as any).id) {
+        await evaluationApi.update((evaluation as any).id, evaluation as any);
+        toast.success('Evaluation submitted');
+        refreshMyProjects();
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to submit evaluation');
+    }
+  };
+
+  const handleReserve = (reservation: any) => {
+    setReservations((prev) => [...prev, reservation]);
+    toast.success('Reservation created');
+  };
+
+  const handleCancelReservation = (id: string) => {
+    setReservations((prev) => prev.filter((r) => r.id !== id));
+    toast.success('Reservation cancelled');
+  };
+
+  const handleChatStart = (faculty: any) => {
+    toast.success('Chat started');
+  };
+
+  const handleAssignEvaluationForProject = (project: Project) => {
+    handleAssignEvaluation(project.id, {} as Evaluation);
   };
 
   useEffect(() => {
@@ -219,7 +266,7 @@ export default function AppContent() {
               projects={projects}
               evaluations={evaluations}
               onProjectCreated={refreshMyProjects}
-              onAssignEvaluation={handleAssignEvaluation}
+              onAssignEvaluation={handleAssignEvaluationForProject}
               studentName={user?.name || "Your name"}
             />
           )}
@@ -227,6 +274,12 @@ export default function AppContent() {
             <ProjectDetails
               projectId={selectedProjectId}
               onBack={() => setCurrentPage("projects")}
+              userRole={userRole}
+              currentUserId={user?.id || ''}
+              projects={projects}
+              evaluations={evaluations}
+              onSubmitEvaluation={handleSubmitEvaluation}
+              onAssignEvaluation={handleCreateEvaluationAssignment}
             />
           )}
           {currentPage === "reservations" && (
@@ -238,16 +291,16 @@ export default function AppContent() {
                 <TabsTrigger value="my">My Reservations</TabsTrigger>
               </TabsList>
               <TabsContent value="desk">
-                <DeskReservation />
+                <DeskReservation reservations={reservations} onReserve={handleReserve} />
               </TabsContent>
               <TabsContent value="lab">
-                <LabAvailability />
+                <LabAvailability reservations={reservations} onReserve={handleReserve} />
               </TabsContent>
               <TabsContent value="meeting-room">
-                <MeetingRoomReservation />
+                <MeetingRoomReservation reservations={reservations} onReserve={handleReserve} />
               </TabsContent>
               <TabsContent value="my">
-                <MyReservations reservations={reservations} />
+                <MyReservations reservations={reservations} onCancel={handleCancelReservation} />
               </TabsContent>
             </Tabs>
           )}
@@ -261,7 +314,7 @@ export default function AppContent() {
             </div>
           )}
           {currentPage === "faculty-directory" && (
-            <Studentview />
+            <Studentview onChatStart={handleChatStart} />
           )}
           {currentPage === "group-posts" && (
             <TeamFinder />
