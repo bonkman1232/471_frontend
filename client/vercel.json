@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://four71-backend.onrender.com"
+      "destination": "https://four71-backend.onrender.com/$1"
     }
   ]
 }
