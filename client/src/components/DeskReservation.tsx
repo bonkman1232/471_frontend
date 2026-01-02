@@ -6,7 +6,7 @@ import { Label } from "./ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Badge } from "./ui/badge";
 import { Calendar, CalendarPlus, Download } from "lucide-react";
-import type { Reservation } from "../App";
+import type { Reservation } from "../types";
 import { toast } from "sonner";
 import { createGoogleCalendarEvent, downloadICSFile } from "../utils/googleCalendar";
 

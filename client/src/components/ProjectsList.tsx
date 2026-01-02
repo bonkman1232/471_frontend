@@ -1,7 +1,7 @@
 import { Search, Filter, Plus, UserPlus, UserCheck } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import type { UserRole, Project, Evaluation } from '../App';
+import type { UserRole, Project, Evaluation } from '../types';
 import { AddProjectModal } from './AddProjectModal';
 import { EvaluationDashboard } from './EvaluationDashboard';
 import { projectApi } from '../services/projectService';

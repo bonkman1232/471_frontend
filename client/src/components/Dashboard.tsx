@@ -1,5 +1,5 @@
 import { TrendingUp, FolderKanban, Calendar, CheckCircle, Clock, AlertCircle, Users } from 'lucide-react';
-import type { PageView, UserRole, Project, Evaluation } from '../App';
+import type { PageView, UserRole, Project, Evaluation } from '../types';
 
 interface DashboardProps {
   userRole: UserRole;

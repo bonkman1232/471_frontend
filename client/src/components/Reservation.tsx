@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { DeskReservation } from "./DeskReservation";
 import { LabAvailability } from "./LabAvailability";
 import { MeetingRoomReservation } from "./MeetingRoomReservation";
-import type { Reservation } from "../App";
+import type { Reservation } from "../types";
 
 interface ReservationProps {
   reservations: Reservation[];

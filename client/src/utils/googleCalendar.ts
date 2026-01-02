@@ -1,4 +1,4 @@
-import type { Reservation } from "../App";
+import type { Reservation } from "../types";
 
 export interface CalendarEvent {
   title: string;

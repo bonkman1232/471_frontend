@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle, Clock, FileEdit, Eye, Download, Printer } from 'lucide-react';
-import type { Project, UserRole, Evaluation } from '../App';
+import type { Project, UserRole, Evaluation } from '../types';
 import { EvaluationFormModal } from './EvaluationFormModal';
 import { ScoreAggregator } from './ScoreAggregator';
 

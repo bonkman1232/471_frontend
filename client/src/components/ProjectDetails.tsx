@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, Calendar, User, Building2, Clock, UserPlus, Star } from 'lucide-react';
-import type { UserRole, Project, Evaluation } from '../App';
+import type { UserRole, Project, Evaluation } from '../types';
 import { ProjectEvaluationTab } from './ProjectEvaluationTab';
 import { projectApi } from '../services/projectService';
 import { toast } from 'sonner';

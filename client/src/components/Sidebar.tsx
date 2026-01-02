@@ -1,5 +1,5 @@
 import { LayoutDashboard, FolderKanban, Calendar, Users, FileText, Settings, Briefcase, MessageSquare, Users2, MapPin, Search, QrCode } from 'lucide-react';
-import type { PageView, UserRole } from '../App';
+import type { PageView, UserRole } from '../types';
 
 interface SidebarProps {
   currentPage: PageView;

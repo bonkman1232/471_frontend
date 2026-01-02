@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, Save, Loader2 } from 'lucide-react';
 import { projectApi, type CreateProjectData } from '../services/projectService';
 import { toast } from 'sonner';
-import type { UserRole } from '../App';
+import type { UserRole } from '../types';
 
 interface AddProjectModalProps {
   onClose: () => void;

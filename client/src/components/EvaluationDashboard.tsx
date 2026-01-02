@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Search, Filter, Eye, FileEdit } from 'lucide-react';
-import type { Project, UserRole, AssessorRole, EvaluationStatus, Evaluation } from '../App';
+import type { Project, UserRole, AssessorRole, EvaluationStatus, Evaluation } from '../types';
 import { evaluationApi } from '../services/evaluationApi';
 
 interface EvaluationDashboardProps {

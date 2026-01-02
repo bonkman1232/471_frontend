@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Calendar, Clock, MapPin, Trash2, CalendarPlus, Download } from "lucide-react";
-import type { Reservation } from "../App";
+import type { Reservation } from "../types";
 import { createGoogleCalendarEvent, downloadICSFile } from "../utils/googleCalendar";
 
 interface MyReservationsProps {

@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { X, Save, AlertCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { evaluationApi } from '../services/evaluationApi';
-import type { Evaluation, Project, Criterion } from '../App';
+import type { Evaluation, Project, Criterion } from '../types';
 
 interface EvaluationFormModalProps {
   evaluation: Evaluation;

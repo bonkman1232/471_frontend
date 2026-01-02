@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Briefcase, Clock, DollarSign, Calendar, CheckCircle2, XCircle, AlertCircle, Check, X } from "lucide-react";
 import type { Position, Application } from "../services/positionApi";
-import type { UserRole } from "../App";
+import type { UserRole } from "../types";
 
 interface PositionApplicationsProps {
   /** temporary stand-in for auth */

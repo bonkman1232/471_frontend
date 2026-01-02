@@ -1,5 +1,5 @@
 import { TrendingUp, Award, BarChart3 } from 'lucide-react';
-import type { Evaluation, UserRole } from '../App';
+import type { Evaluation, UserRole } from '../types';
 
 interface ScoreAggregatorProps {
   evaluations: Evaluation[];

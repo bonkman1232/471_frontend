@@ -1,5 +1,5 @@
 import { ArrowLeft, Download, Printer, User, Award, TrendingUp, MessageSquare } from 'lucide-react';
-import type { Project, UserRole, Evaluation } from '../App';
+import type { Project, UserRole, Evaluation } from '../types';
 
 interface EvaluationSummaryPageProps {
   project: Project;

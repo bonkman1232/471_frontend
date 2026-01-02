@@ -1,0 +1,93 @@
+21:12:09.802 src/components/AddProjectModal.tsx(3,27): error TS6133: 'CreateProjectData' is declared but its value is never read.
+21:12:09.803 src/components/AddProjectModal.tsx(5,15): error TS2614: Module '"../App"' has no exported member 'UserRole'. Did you mean to use 'import UserRole from "../App"' instead?
+21:12:09.803 src/components/AddProjectModal.tsx(24,34): error TS6133: 'setAssignSelfAsSupervisor' is declared but its value is never read.
+21:12:09.803 src/components/AppContent.tsx(9,1): error TS6133: 'Reservation' is declared but its value is never read.
+21:12:09.805 src/components/AppContent.tsx(16,1): error TS6133: 'applicationApi' is declared but its value is never read.
+21:12:09.805 src/components/AppContent.tsx(23,20): error TS6133: 'Building' is declared but its value is never read.
+21:12:09.805 src/components/AppContent.tsx(23,30): error TS6133: 'Calendar' is declared but its value is never read.
+21:12:09.806 src/components/AppContent.tsx(23,40): error TS6133: 'MonitorSmartphone' is declared but its value is never read.
+21:12:09.806 src/components/AppContent.tsx(91,23): error TS6133: 'setEvaluations' is declared but its value is never read.
+21:12:09.806 src/components/AppContent.tsx(92,24): error TS6133: 'setReservations' is declared but its value is never read.
+21:12:09.806 src/components/AppContent.tsx(92,52): error TS2749: 'Reservation' refers to a value, but is being used as a type here. Did you mean 'typeof Reservation'?
+21:12:09.806 src/components/AppContent.tsx(139,43): error TS2551: Property 'getMyProjects' does not exist on type '{ testConnection: () => Promise<any>; createProject: (projectData: CreateProjectData) => Promise<Project>; listMyProjects: () => Promise<Project[]>; listAllProjects: () => Promise<...>; createProjectAsFaculty: (projectData: CreateProjectData) => Promise<...>; setMeAsSupervisor: (projectId: string) => Promise<...>; e...'. Did you mean 'listMyProjects'?
+21:12:09.806 src/components/AppContent.tsx(147,41): error TS6133: 'projectId' is declared but its value is never read.
+21:12:09.807 src/components/AppContent.tsx(149,27): error TS2339: Property 'createEvaluation' does not exist on type '{ list: (projectId?: string | undefined, assessorId?: string | undefined) => Promise<Evaluation[]>; summary: (projectId: string) => Promise<EvaluationSummary>; create: (data: { ...; }) => Promise<...>; update: (id: string, updates: Partial<...>) => Promise<...>; get: (id: string) => Promise<...>; delete: (id: string...'.
+21:12:09.807 src/components/AppContent.tsx(222,15): error TS2322: Type '(projectId: string, evaluation: Evaluation) => Promise<void>' is not assignable to type '(project: Project) => void'.
+21:12:09.807 src/components/AppContent.tsx(227,14): error TS2740: Type '{ projectId: string; onBack: () => void; }' is missing the following properties from type 'ProjectDetailsProps': userRole, currentUserId, projects, evaluations, and 2 more.
+21:12:09.807 src/components/AppContent.tsx(241,18): error TS2739: Type '{}' is missing the following properties from type 'DeskReservationProps': reservations, onReserve
+21:12:09.807 src/components/AppContent.tsx(244,18): error TS2739: Type '{}' is missing the following properties from type 'LabAvailabilityProps': reservations, onReserve
+21:12:09.807 src/components/AppContent.tsx(247,18): error TS2739: Type '{}' is missing the following properties from type 'MeetingRoomReservationProps': reservations, onReserve
+21:12:09.807 src/components/AppContent.tsx(250,18): error TS2741: Property 'onCancel' is missing in type '{ reservations: Reservation[]; }' but required in type 'MyReservationsProps'.
+21:12:09.808 src/components/AppContent.tsx(264,14): error TS2741: Property 'onChatStart' is missing in type '{}' but required in type 'StudentViewProps'.
+21:12:09.808 src/components/Dashboard.tsx(1,36): error TS6133: 'Calendar' is declared but its value is never read.
+21:12:09.808 src/components/Dashboard.tsx(1,79): error TS6133: 'Users' is declared but its value is never read.
+21:12:09.808 src/components/Dashboard.tsx(2,15): error TS2614: Module '"../App"' has no exported member 'PageView'. Did you mean to use 'import PageView from "../App"' instead?
+21:12:09.808 src/components/Dashboard.tsx(2,25): error TS2614: Module '"../App"' has no exported member 'UserRole'. Did you mean to use 'import UserRole from "../App"' instead?
+21:12:09.808 src/components/Dashboard.tsx(2,35): error TS2614: Module '"../App"' has no exported member 'Project'. Did you mean to use 'import Project from "../App"' instead?
+21:12:09.808 src/components/Dashboard.tsx(2,44): error TS2614: Module '"../App"' has no exported member 'Evaluation'. Did you mean to use 'import Evaluation from "../App"' instead?
+21:12:09.808 src/components/DeskReservation.tsx(9,15): error TS2614: Module '"../App"' has no exported member 'Reservation'. Did you mean to use 'import Reservation from "../App"' instead?
+21:12:09.808 src/components/EvaluationDashboard.tsx(3,15): error TS2614: Module '"../App"' has no exported member 'Project'. Did you mean to use 'import Project from "../App"' instead?
+21:12:09.808 src/components/EvaluationDashboard.tsx(3,24): error TS2614: Module '"../App"' has no exported member 'UserRole'. Did you mean to use 'import UserRole from "../App"' instead?
+21:12:09.808 src/components/EvaluationDashboard.tsx(3,34): error TS2614: Module '"../App"' has no exported member 'AssessorRole'. Did you mean to use 'import AssessorRole from "../App"' instead?
+21:12:09.809 src/components/EvaluationDashboard.tsx(3,48): error TS2614: Module '"../App"' has no exported member 'EvaluationStatus'. Did you mean to use 'import EvaluationStatus from "../App"' instead?
+21:12:09.809 src/components/EvaluationDashboard.tsx(3,66): error TS2614: Module '"../App"' has no exported member 'Evaluation'. Did you mean to use 'import Evaluation from "../App"' instead?
+21:12:09.809 src/components/EvaluationDashboard.tsx(4,1): error TS6133: 'evaluationApi' is declared but its value is never read.
+21:12:09.809 src/components/EvaluationDashboard.tsx(72,17): error TS2339: Property 'title' does not exist on type 'ProjectWithStatus'.
+21:12:09.809 src/components/EvaluationDashboard.tsx(73,17): error TS2339: Property 'studentName' does not exist on type 'ProjectWithStatus'.
+21:12:09.809 src/components/EvaluationDashboard.tsx(213,36): error TS2339: Property 'id' does not exist on type 'ProjectWithStatus'.
+21:12:09.809 src/components/EvaluationDashboard.tsx(216,63): error TS2339: Property 'title' does not exist on type 'ProjectWithStatus'.
+21:12:09.809 src/components/EvaluationDashboard.tsx(217,76): error TS2339: Property 'studentId' does not exist on type 'ProjectWithStatus'.
+21:12:09.809 src/components/EvaluationDashboard.tsx(220,70): error TS2339: Property 'studentName' does not exist on type 'ProjectWithStatus'.
+21:12:09.809 src/components/EvaluationDashboard.tsx(228,70): error TS2339: Property 'department' does not exist on type 'ProjectWithStatus'.
+21:12:09.809 src/components/EvaluationFormModal.tsx(5,15): error TS2614: Module '"../App"' has no exported member 'Evaluation'. Did you mean to use 'import Evaluation from "../App"' instead?
+21:12:09.810 src/components/EvaluationFormModal.tsx(5,27): error TS2614: Module '"../App"' has no exported member 'Project'. Did you mean to use 'import Project from "../App"' instead?
+21:12:09.810 src/components/EvaluationFormModal.tsx(5,36): error TS2614: Module '"../App"' has no exported member 'Criterion'. Did you mean to use 'import Criterion from "../App"' instead?
+21:12:09.810 src/components/EvaluationSummaryPage.tsx(2,15): error TS2614: Module '"../App"' has no exported member 'Project'. Did you mean to use 'import Project from "../App"' instead?
+21:12:09.810 src/components/EvaluationSummaryPage.tsx(2,24): error TS2614: Module '"../App"' has no exported member 'UserRole'. Did you mean to use 'import UserRole from "../App"' instead?
+21:12:09.810 src/components/EvaluationSummaryPage.tsx(2,34): error TS2614: Module '"../App"' has no exported member 'Evaluation'. Did you mean to use 'import Evaluation from "../App"' instead?
+21:12:09.810 src/components/EvaluationSummaryPage.tsx(11,50): error TS6133: 'userRole' is declared but its value is never read.
+21:12:09.810 src/components/EvaluationSummaryPage.tsx(22,67): error TS7006: Parameter 'criterion' implicitly has an 'any' type.
+21:12:09.810 src/components/EvaluationSummaryPage.tsx(22,78): error TS7006: Parameter 'index' implicitly has an 'any' type.
+21:12:09.810 src/components/EvaluationSummaryPage.tsx(29,53): error TS6133: 'evalIndex' is declared but its value is never read.
+21:12:09.810 src/components/EvaluationSummaryPage.tsx(212,36): error TS7006: Parameter 'criterion' implicitly has an 'any' type.
+21:12:09.810 src/components/EvaluationSummaryPage.tsx(212,47): error TS7006: Parameter 'index' implicitly has an 'any' type.
+21:12:09.810 src/components/EvaluationSummaryPage.tsx(242,44): error TS7006: Parameter 'scoreData' implicitly has an 'any' type.
+21:12:09.811 src/components/EvaluationSummaryPage.tsx(242,55): error TS7006: Parameter 'scoreIndex' implicitly has an 'any' type.
+21:12:09.811 src/components/EvaluationSummaryPage.tsx(282,44): error TS7006: Parameter 'c' implicitly has an 'any' type.
+21:12:09.811 src/components/EvaluationSummaryPage.tsx(285,47): error TS7006: Parameter 'criterion' implicitly has an 'any' type.
+21:12:09.811 src/components/EvaluationSummaryPage.tsx(285,58): error TS7006: Parameter 'idx' implicitly has an 'any' type.
+21:12:09.811 src/components/LabAvailability.tsx(9,15): error TS2614: Module '"../App"' has no exported member 'Reservation'. Did you mean to use 'import Reservation from "../App"' instead?
+21:12:09.811 src/components/LocationFinder.tsx(24,10): error TS6133: 'locations' is declared but its value is never read.
+21:12:09.811 src/components/LocationFinder.tsx(24,21): error TS6133: 'setLocations' is declared but its value is never read.
+21:12:09.811 src/components/MeetingRoomReservation.tsx(9,15): error TS2614: Module '"../App"' has no exported member 'Reservation'. Did you mean to use 'import Reservation from "../App"' instead?
+21:12:09.811 src/components/MyReservations.tsx(4,27): error TS6133: 'MapPin' is declared but its value is never read.
+21:12:09.811 src/components/MyReservations.tsx(5,15): error TS2614: Module '"../App"' has no exported member 'Reservation'. Did you mean to use 'import Reservation from "../App"' instead?
+21:12:09.811 src/components/PositionApplications.tsx(9,79): error TS6133: 'DialogTrigger' is declared but its value is never read.
+21:12:09.811 src/components/PositionApplications.tsx(13,15): error TS2614: Module '"../App"' has no exported member 'UserRole'. Did you mean to use 'import UserRole from "../App"' instead?
+21:12:09.811 src/components/ProjectDetails.tsx(3,15): error TS2614: Module '"../App"' has no exported member 'UserRole'. Did you mean to use 'import UserRole from "../App"' instead?
+21:12:09.836 src/components/ProjectDetails.tsx(3,25): error TS2614: Module '"../App"' has no exported member 'Project'. Did you mean to use 'import Project from "../App"' instead?
+21:12:09.836 src/components/ProjectDetails.tsx(3,34): error TS2614: Module '"../App"' has no exported member 'Evaluation'. Did you mean to use 'import Evaluation from "../App"' instead?
+21:12:09.839 src/components/ProjectEvaluationTab.tsx(3,15): error TS2614: Module '"../App"' has no exported member 'Project'. Did you mean to use 'import Project from "../App"' instead?
+21:12:09.840 src/components/ProjectEvaluationTab.tsx(3,24): error TS2614: Module '"../App"' has no exported member 'UserRole'. Did you mean to use 'import UserRole from "../App"' instead?
+21:12:09.840 src/components/ProjectEvaluationTab.tsx(3,34): error TS2614: Module '"../App"' has no exported member 'Evaluation'. Did you mean to use 'import Evaluation from "../App"' instead?
+21:12:09.842 src/components/ProjectEvaluations.tsx(3,15): error TS2614: Module '"../App"' has no exported member 'Project'. Did you mean to use 'import Project from "../App"' instead?
+21:12:09.843 src/components/ProjectEvaluations.tsx(3,24): error TS2614: Module '"../App"' has no exported member 'UserRole'. Did you mean to use 'import UserRole from "../App"' instead?
+21:12:09.843 src/components/ProjectEvaluations.tsx(3,34): error TS2614: Module '"../App"' has no exported member 'Evaluation'. Did you mean to use 'import Evaluation from "../App"' instead?
+21:12:09.843 src/components/ProjectsList.tsx(1,32): error TS6133: 'UserPlus' is declared but its value is never read.
+21:12:09.843 src/components/ProjectsList.tsx(4,15): error TS2614: Module '"../App"' has no exported member 'UserRole'. Did you mean to use 'import UserRole from "../App"' instead?
+21:12:09.844 src/components/ProjectsList.tsx(4,25): error TS2614: Module '"../App"' has no exported member 'Project'. Did you mean to use 'import Project from "../App"' instead?
+21:12:09.844 src/components/ProjectsList.tsx(4,34): error TS2614: Module '"../App"' has no exported member 'Evaluation'. Did you mean to use 'import Evaluation from "../App"' instead?
+21:12:09.844 src/components/Reservation.tsx(1,1): error TS6133: 'useState' is declared but its value is never read.
+21:12:09.844 src/components/Reservation.tsx(6,15): error TS2614: Module '"../App"' has no exported member 'Reservation'. Did you mean to use 'import Reservation from "../App"' instead?
+21:12:09.845 src/components/ScoreAggregator.tsx(2,15): error TS2614: Module '"../App"' has no exported member 'Evaluation'. Did you mean to use 'import Evaluation from "../App"' instead?
+21:12:09.845 src/components/ScoreAggregator.tsx(2,27): error TS2614: Module '"../App"' has no exported member 'UserRole'. Did you mean to use 'import UserRole from "../App"' instead?
+21:12:09.845 src/components/ScoreAggregator.tsx(9,48): error TS6133: 'userRole' is declared but its value is never read.
+21:12:09.845 src/components/ScoreAggregator.tsx(14,58): error TS7006: Parameter 'criterion' implicitly has an 'any' type.
+21:12:09.845 src/components/ScoreAggregator.tsx(14,69): error TS7006: Parameter 'index' implicitly has an 'any' type.
+21:12:09.845 src/components/ScoreAggregator.tsx(112,36): error TS7006: Parameter 'criterion' implicitly has an 'any' type.
+21:12:09.845 src/components/ScoreAggregator.tsx(112,47): error TS7006: Parameter 'index' implicitly has an 'any' type.
+21:12:09.845 src/components/Sidebar.tsx(2,15): error TS2614: Module '"../App"' has no exported member 'PageView'. Did you mean to use 'import PageView from "../App"' instead?
+21:12:09.845 src/components/Sidebar.tsx(2,25): error TS2614: Module '"../App"' has no exported member 'UserRole'. Did you mean to use 'import UserRole from "../App"' instead?
+21:12:09.845 src/services/positionApi.ts(141,34): error TS6133: 'studentId' is declared but its value is never read.
+21:12:09.845 src/utils/googleCalendar.ts(1,15): error TS2614: Module '"../App"' has no exported member 'Reservation'. Did you mean to use 'import Reservation from "../App"' instead?
+21:12:10.579 Error: Command "npm run build" exited with 2
