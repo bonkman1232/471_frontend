@@ -8,7 +8,7 @@ export interface User {
   phone?: string;
 }
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
 
 class AuthService {
   private getAuthToken(): string | null {

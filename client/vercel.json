@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/"
+      "source": "/api/(.*)",
+      "destination": "https://four71-backend.onrender.com"
     }
   ]
 }

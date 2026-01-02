@@ -12,8 +12,10 @@ const AdminLogin: React.FC = () => {
     setErrorMsg(''); // Reset error state
 
     try {
+      // Use API base from env when available
+      const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
       // Ensure the endpoint matches your server.js setup
-      const response = await fetch('/api/auth/admin-login', {
+      const response = await fetch(`${API_BASE}/auth/admin-login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ universityId: adminId, password }),
