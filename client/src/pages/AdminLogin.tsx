@@ -11,11 +11,10 @@ const AdminLogin: React.FC = () => {
   const handleAdminSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      try {
-        const res = await apiClient.post('/auth/admin-login', { universityId: adminId, password });
-        const data = res.data;
+      const res = await apiClient.post('/auth/admin-login', { universityId: adminId, password });
+      const data = res.data;
 
-        if (data && data.user && data.token) {
+      if (data && data.user && data.token) {
         // Verify the user actually has the admin role before proceeding
         if (data.user.roles.includes('administrator')) {
           localStorage.setItem('token', data.token);
@@ -27,10 +26,10 @@ const AdminLogin: React.FC = () => {
       } else {
         alert(data?.message || "Invalid Admin Credentials");
       }
-      } catch (error) {
-        console.error("Admin Login error:", error);
-        alert("Server error.");
-      }
+    } catch (error) {
+      console.error("Admin Login error:", error);
+      alert("Server error.");
+    }
   };
 
   return (
