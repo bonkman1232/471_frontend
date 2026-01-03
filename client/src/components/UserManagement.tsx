@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import apiClient from '../services/apiClient';
 import { Users, UserPlus, Shield, Edit, Trash2, Search } from 'lucide-react';
 
 interface User {
@@ -36,9 +37,12 @@ export function UserManagement() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch('/api/users');
-      const data = await res.json();
-      setUsers(data || []);
+      try {
+        const res = await apiClient.get('/users');
+        setUsers(res.data || []);
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
     } catch (error) {
       console.error("Failed to fetch users:", error);
     } finally {
@@ -49,19 +53,19 @@ export function UserManagement() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      
-      if (res.ok) {
-        alert('✅ User created successfully!');
-        setShowCreateForm(false);
-        resetForm();
-        fetchUsers();
-      } else {
-        alert('❌ Failed to create user');
+      try {
+        const res = await apiClient.post('/users', formData);
+        if (res.status >= 200 && res.status < 300) {
+          alert('✅ User created successfully!');
+          setShowCreateForm(false);
+          resetForm();
+          fetchUsers();
+        } else {
+          alert('❌ Failed to create user');
+        }
+      } catch (error) {
+        console.error("Error creating user:", error);
+        alert('❌ Server error');
       }
     } catch (error) {
       console.error("Error creating user:", error);
@@ -82,19 +86,19 @@ export function UserManagement() {
         department: formData.department
       };
 
-      const res = await fetch(`/api/users/${editingUser._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
-      });
-      
-      if (res.ok) {
-        alert('✅ User updated successfully!');
-        setEditingUser(null);
-        resetForm();
-        fetchUsers();
-      } else {
-        alert('❌ Failed to update user');
+      try {
+        const res = await apiClient.put(`/users/${editingUser._id}`, updateData);
+        if (res.status >= 200 && res.status < 300) {
+          alert('✅ User updated successfully!');
+          setEditingUser(null);
+          resetForm();
+          fetchUsers();
+        } else {
+          alert('❌ Failed to update user');
+        }
+      } catch (error) {
+        console.error("Error updating user:", error);
+        alert('❌ Server error');
       }
     } catch (error) {
       console.error("Error updating user:", error);
@@ -106,15 +110,17 @@ export function UserManagement() {
     if (!confirm('Are you sure you want to delete this user?')) return;
 
     try {
-      const res = await fetch(`/api/users/${id}`, {
-        method: 'DELETE'
-      });
-      
-      if (res.ok) {
-        alert('✅ User deleted successfully!');
-        fetchUsers();
-      } else {
-        alert('❌ Failed to delete user');
+      try {
+        const res = await apiClient.delete(`/users/${id}`);
+        if (res.status >= 200 && res.status < 300) {
+          alert('✅ User deleted successfully!');
+          fetchUsers();
+        } else {
+          alert('❌ Failed to delete user');
+        }
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        alert('❌ Server error');
       }
     } catch (error) {
       console.error("Error deleting user:", error);

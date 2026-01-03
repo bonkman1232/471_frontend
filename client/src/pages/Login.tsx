@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import apiClient from '../services/apiClient';
 import { useNavigate } from 'react-router-dom';
 import type { AuthResponse, FormErrors } from '../types/auth';
 import { useAuth } from '../contexts/AuthContext';
@@ -45,24 +46,18 @@ const Login: React.FC = () => {
     setIsLoading(true);
     
     try {
-      const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
-      const response = await fetch(`${API_BASE}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await apiClient.post('/auth/login', { email, password });
+      const data: AuthResponse = res.data;
 
-      const data: AuthResponse = await response.json();
-
-      if (response.ok && data.user && data.token) {
+      if (data && data.user && data.token) {
         login(data.user, data.token);
         navigate('/dashboard');
       } else {
-        setErrors({ ...errors, general: data.message || "Invalid credentials" });
+        setErrors({ ...errors, general: data?.message || "Invalid credentials" });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login error:", error);
-      setErrors({ ...errors, general: "Server error. Please try again later." });
+      setErrors({ ...errors, general: error?.response?.data?.message || "Server error. Please try again later." });
     } finally {
       setIsLoading(false);
     }

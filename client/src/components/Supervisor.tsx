@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import apiClient from '../services/apiClient';
 
 // TYPES
 interface TimeSlot {
@@ -38,12 +39,11 @@ export default function Supervisor() {
     if (!searchId.trim()) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:1532/api/faculty/${searchId}`);
-      if (res.ok) {
-        const profile = await res.json();
-        setData(profile);
+      try {
+        const res = await apiClient.get(`/faculty/${searchId}`);
+        setData(res.data);
         setIsLoaded(true);
-      } else {
+      } catch (err) {
         alert("Supervisor ID not found in database!");
       }
     } catch (error) {
@@ -57,15 +57,12 @@ export default function Supervisor() {
   const handleSave = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:1532/api/faculty/update', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data) // Send full state to backend
-      });
-
-      if (res.ok) {
-        alert("✅ Availability Published Successfully!");
-      } else {
+      try {
+        const res = await apiClient.put('/faculty/update', data);
+        if (res.status >= 200 && res.status < 300) alert("✅ Availability Published Successfully!");
+        else alert("❌ Failed to update profile.");
+      } catch (err) {
+        console.error("Save error:", err);
         alert("❌ Failed to update profile.");
       }
     } catch (error) {

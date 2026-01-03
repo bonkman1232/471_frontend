@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import apiClient from '../services/apiClient';
 import { useNavigate } from "react-router-dom";
 //import './Dashboard.css';
 
@@ -27,13 +28,8 @@ export default function StudentDashboard() {
 
   const fetchConsultations = async () => {
     try {
-      const response = await fetch('/api/consultations/my-consultations', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setConsultations(data);
-      }
+      const res = await apiClient.get('/consultations/my-consultations');
+      setConsultations(res.data || []);
     } catch (err) {
       console.log("Consultations API not ready yet");
     }

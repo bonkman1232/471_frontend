@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import apiClient from '../services/apiClient';
 
 interface Location {
   _id: string;
@@ -35,9 +36,12 @@ export default function LocationManagement() {
 
   const fetchLocations = async () => {
     try {
-      const res = await fetch('/api/locations');
-      const data = await res.json();
-      setLocations(data || []);
+      try {
+        const res = await apiClient.get('/locations');
+        setLocations(res.data || []);
+      } catch (error) {
+        console.error("Failed to fetch locations:", error);
+      }
     } catch (error) {
       console.error("Failed to fetch locations:", error);
     } finally {
@@ -55,19 +59,19 @@ export default function LocationManagement() {
         rooms: formData.rooms.filter(room => room.number && room.code)
       };
 
-      const res = await fetch('/api/locations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      
-      if (res.ok) {
-        alert('✅ Location created successfully!');
-        setShowCreateForm(false);
-        resetForm();
-        fetchLocations();
-      } else {
-        alert('❌ Failed to create location');
+      try {
+        const res = await apiClient.post('/locations', payload);
+        if (res.status >= 200 && res.status < 300) {
+          alert('✅ Location created successfully!');
+          setShowCreateForm(false);
+          resetForm();
+          fetchLocations();
+        } else {
+          alert('❌ Failed to create location');
+        }
+      } catch (error) {
+        console.error("Error creating location:", error);
+        alert('❌ Server error');
       }
     } catch (error) {
       console.error("Error creating location:", error);
@@ -87,19 +91,19 @@ export default function LocationManagement() {
         rooms: formData.rooms.filter(room => room.number && room.code)
       };
 
-      const res = await fetch(`/api/locations/${editingLocation._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      
-      if (res.ok) {
-        alert('✅ Location updated successfully!');
-        setEditingLocation(null);
-        resetForm();
-        fetchLocations();
-      } else {
-        alert('❌ Failed to update location');
+      try {
+        const res = await apiClient.put(`/locations/${editingLocation._id}`, payload);
+        if (res.status >= 200 && res.status < 300) {
+          alert('✅ Location updated successfully!');
+          setEditingLocation(null);
+          resetForm();
+          fetchLocations();
+        } else {
+          alert('❌ Failed to update location');
+        }
+      } catch (error) {
+        console.error("Error updating location:", error);
+        alert('❌ Server error');
       }
     } catch (error) {
       console.error("Error updating location:", error);
@@ -111,15 +115,17 @@ export default function LocationManagement() {
     if (!confirm('Are you sure you want to delete this location?')) return;
 
     try {
-      const res = await fetch(`/api/locations/${id}`, {
-        method: 'DELETE'
-      });
-      
-      if (res.ok) {
-        alert('✅ Location deleted successfully!');
-        fetchLocations();
-      } else {
-        alert('❌ Failed to delete location');
+      try {
+        const res = await apiClient.delete(`/locations/${id}`);
+        if (res.status >= 200 && res.status < 300) {
+          alert('✅ Location deleted successfully!');
+          fetchLocations();
+        } else {
+          alert('❌ Failed to delete location');
+        }
+      } catch (error) {
+        console.error("Error deleting location:", error);
+        alert('❌ Server error');
       }
     } catch (error) {
       console.error("Error deleting location:", error);

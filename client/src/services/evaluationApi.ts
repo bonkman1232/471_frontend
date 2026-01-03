@@ -1,19 +1,6 @@
-import axios from 'axios';
+import { apiClient } from './apiClient';
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-});
-
-// Demo mode - set headers for evaluation operations
-api.interceptors.request.use((config: any) => {
-  // Set demo headers for authentication
-  config.headers['x-user-id'] = 'demo-faculty-1'; // Default demo faculty ID
-  config.headers['x-user-role'] = 'faculty'; // Default role
-  console.log('EVALUATION API REQUEST - Using demo headers for authentication');
-  return config;
-});
+const DEMO_HEADERS = { 'x-user-id': 'demo-faculty-1', 'x-user-role': 'faculty' };
 
 export interface Evaluation {
   _id: string;
@@ -60,7 +47,7 @@ export const evaluationApi = {
       if (projectId) params.append('projectId', projectId);
       if (assessorId) params.append('assessorId', assessorId);
 
-      const response = await api.get(`/evaluations?${params.toString()}`);
+      const response = await apiClient.get(`/evaluations?${params.toString()}`, { headers: DEMO_HEADERS });
       console.log('📤 FRONTEND: Retrieved evaluations from MongoDB:', response.data.data?.length || 'N/A');
       return response.data.data || [];
     } catch (error) {
@@ -73,7 +60,7 @@ export const evaluationApi = {
   summary: async (projectId: string): Promise<EvaluationSummary> => {
     try {
       console.log('📥 FRONTEND: Fetching evaluation summary from MongoDB');
-      const response = await api.get(`/evaluations/project/${projectId}/summary`);
+      const response = await apiClient.get(`/evaluations/project/${projectId}/summary`, { headers: DEMO_HEADERS });
       console.log('📤 FRONTEND: Retrieved evaluation summary:', response.data.data);
       return response.data.data || {
         totalEvaluations: 0,
@@ -96,7 +83,7 @@ export const evaluationApi = {
   create: async (data: { projectId: string; assessorRole: string; assessorId?: string; assessorName?: string }): Promise<Evaluation> => {
     try {
       console.log('🚀 FRONTEND: Creating evaluation assignment:', data);
-      const response = await api.post('/evaluations', data);
+      const response = await apiClient.post('/evaluations', data, { headers: DEMO_HEADERS });
       console.log('✅ FRONTEND: Evaluation assignment created:', response.data.data);
       return response.data.data;
     } catch (error: any) {
@@ -109,7 +96,7 @@ export const evaluationApi = {
   update: async (id: string, updates: Partial<Evaluation>): Promise<Evaluation> => {
     try {
       console.log('🚀 FRONTEND: Updating evaluation:', id, updates);
-      const response = await api.put(`/evaluations/${id}`, updates);
+      const response = await apiClient.put(`/evaluations/${id}`, updates, { headers: DEMO_HEADERS });
       console.log('✅ FRONTEND: Evaluation updated:', response.data.data);
       return response.data.data;
     } catch (error: any) {
@@ -122,7 +109,7 @@ export const evaluationApi = {
   get: async (id: string): Promise<Evaluation> => {
     try {
       console.log('📥 FRONTEND: Fetching single evaluation:', id);
-      const response = await api.get(`/evaluations/${id}`);
+      const response = await apiClient.get(`/evaluations/${id}`, { headers: DEMO_HEADERS });
       console.log('📤 FRONTEND: Retrieved evaluation:', response.data.data);
       return response.data.data;
     } catch (error: any) {
@@ -135,7 +122,7 @@ export const evaluationApi = {
   delete: async (id: string): Promise<void> => {
     try {
       console.log('🗑️ FRONTEND: Deleting evaluation:', id);
-      await api.delete(`/evaluations/${id}`);
+      await apiClient.delete(`/evaluations/${id}`, { headers: DEMO_HEADERS });
       console.log('✅ FRONTEND: Evaluation deleted');
     } catch (error: any) {
       console.error('❌ FRONTEND: Error deleting evaluation:', error);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import apiClient from '../services/apiClient';
 import './Dashboard.css';
 
 interface Session {
@@ -16,11 +17,13 @@ const FacultySchedule: React.FC = () => {
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
-        const res = await fetch('/api/consultations/schedule', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
-        const data = await res.json();
-        setSessions(data);
+        try {
+          const res = await apiClient.get('/consultations/schedule');
+          setSessions(res.data || []);
+        } catch (err) {
+          console.error(err);
+          alert('Failed to fetch schedule.');
+        }
       } catch (err) {
         console.error(err);
         alert('Failed to fetch schedule.');

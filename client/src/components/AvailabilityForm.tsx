@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import apiClient from '../services/apiClient';
+import { apiPath } from '../config/api';
 
 const AvailabilityForm = () => {
   const [capacity, setCapacity] = useState(0);
@@ -15,17 +17,18 @@ const AvailabilityForm = () => {
     setLoading(true);
     
     try {
-      const res = await fetch(`/api/faculty/update-availability/${userId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      try {
+        const payload = {
           supervisionCapacity: capacity,
           availabilitySlots: [{ day, startTime, endTime }]
-        })
-      });
-      
-      if (res.ok) alert('✅ Availability updated!');
-      else alert('❌ Update failed. Check User ID.');
+        };
+        const res = await apiClient.put(`/faculty/update-availability/${userId}`, payload);
+        if (res.status >= 200 && res.status < 300) alert('✅ Availability updated!');
+        else alert('❌ Update failed. Check User ID.');
+      } catch (err) {
+        console.error(err);
+        alert('❌ Update failed. Check User ID.');
+      }
       
     } catch (err) {
       console.error(err);

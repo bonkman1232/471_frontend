@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import apiClient from '../services/apiClient';
 
 interface GroupPost {
   _id: string;
@@ -52,9 +53,12 @@ export default function TeamFinder() {
 
   const fetchPosts = async () => {
     try {
-      const res = await fetch('/api/group-posts');
-      const data = await res.json();
-      setPosts(data || []);
+      try {
+        const res = await apiClient.get('/group-posts');
+        setPosts(res.data || []);
+      } catch (error) {
+        console.error("Failed to fetch group posts:", error);
+      }
     } catch (error) {
       console.error("Failed to fetch group posts:", error);
     } finally {
@@ -64,20 +68,17 @@ export default function TeamFinder() {
 
   const handleJoinPost = async (postId: string) => {
     try {
-      const res = await fetch(`/api/group-posts/${postId}/apply`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          applicantId: 'current-user-id' // This should come from auth context
-        })
-      });
-      
-      if (res.ok) {
-        alert('✅ Successfully joined the team!');
-        fetchPosts();
-      } else {
-        const error = await res.json();
-        alert(`❌ Failed to join: ${error.message || 'Unknown error'}`);
+      try {
+        const res = await apiClient.post(`/group-posts/${postId}/apply`, { applicantId: 'current-user-id' });
+        if (res.status >= 200 && res.status < 300) {
+          alert('✅ Successfully joined the team!');
+          fetchPosts();
+        } else {
+          alert(`❌ Failed to join: ${res.data?.message || 'Unknown error'}`);
+        }
+      } catch (error) {
+        console.error("Error joining post:", error);
+        alert('❌ Server error');
       }
     } catch (error) {
       console.error("Error joining post:", error);
@@ -89,19 +90,17 @@ export default function TeamFinder() {
     if (!confirm('Are you sure you want to leave this team?')) return;
 
     try {
-      const res = await fetch(`/api/group-posts/${postId}/leave`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: 'current-user-id' // This should come from auth context
-        })
-      });
-      
-      if (res.ok) {
-        alert('✅ Successfully left the team!');
-        fetchPosts();
-      } else {
-        alert('❌ Failed to leave team');
+      try {
+        const res = await apiClient.post(`/group-posts/${postId}/leave`, { userId: 'current-user-id' });
+        if (res.status >= 200 && res.status < 300) {
+          alert('✅ Successfully left the team!');
+          fetchPosts();
+        } else {
+          alert('❌ Failed to leave team');
+        }
+      } catch (error) {
+        console.error("Error leaving post:", error);
+        alert('❌ Server error');
       }
     } catch (error) {
       console.error("Error leaving post:", error);
@@ -117,30 +116,20 @@ export default function TeamFinder() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/group-posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          techStack: formData.techStack.split(',').map(s => s.trim()).filter(s => s),
-          postedBy: 'current-user-id' // This should come from auth context
-        })
-      });
-      
-      if (res.ok) {
-        alert('✅ Team post created successfully!');
-        setShowCreateForm(false);
-        setFormData({
-          projectName: '',
-          details: '',
-          department: '',
-          maxMembers: 4,
-          supervisorName: '',
-          techStack: ''
-        });
-        fetchPosts();
-      } else {
-        alert('❌ Failed to create post');
+      try {
+        const payload = { ...formData, techStack: formData.techStack.split(',').map(s => s.trim()).filter(s => s), postedBy: 'current-user-id' };
+        const res = await apiClient.post('/group-posts', payload);
+        if (res.status >= 200 && res.status < 300) {
+          alert('✅ Team post created successfully!');
+          setShowCreateForm(false);
+          setFormData({ projectName: '', details: '', department: '', maxMembers: 4, supervisorName: '', techStack: '' });
+          fetchPosts();
+        } else {
+          alert('❌ Failed to create post');
+        }
+      } catch (error) {
+        console.error("Error creating post:", error);
+        alert('❌ Server error');
       }
     } catch (error) {
       console.error("Error creating post:", error);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import apiClient from '../services/apiClient';
 
 interface Assignment {
   _id: string;
@@ -28,13 +29,11 @@ export default function AdminAssignment() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const projRes = await fetch('http://localhost:1532/api/projects/search');
-      const projData = await projRes.json();
-      setAssignments(projData);
+      const projRes = await apiClient.get('/projects/search');
+      setAssignments(projRes.data || []);
 
-      const facRes = await fetch('http://localhost:1532/api/faculty/all');
-      const facData = await facRes.json();
-      setFacultyList(facData);
+      const facRes = await apiClient.get('/faculty/all');
+      setFacultyList(facRes.data || []);
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {
@@ -79,25 +78,19 @@ export default function AdminAssignment() {
     }
 
     try {
-      const res = await fetch('http://localhost:1532/api/projects/assign', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          projectId: targetProjectId,
-          supervisorName: targetSupervisorName,
-          adminName: "Admin"
-        })
-      });
-
-      const data = await res.json(); // Read JSON response first
-
-      if (res.ok) {
-        alert("✅ Assignment Successful");
-        setIsModalOpen(false);
-        fetchData(); 
-      } else {
-        // Now 'data.message' will exist because backend sends it properly
-        alert(`❌ Failed: ${data.message || 'Unknown Error'}`);
+      try {
+        const payload = { projectId: targetProjectId, supervisorName: targetSupervisorName, adminName: "Admin" };
+        const res = await apiClient.put('/projects/assign', payload);
+        if (res.status >= 200 && res.status < 300) {
+          alert("✅ Assignment Successful");
+          setIsModalOpen(false);
+          fetchData();
+        } else {
+          alert(`❌ Failed: ${res.data?.message || 'Unknown Error'}`);
+        }
+      } catch (err) {
+        console.error("Assign error:", err);
+        alert("❌ Network Error: Could not connect to server.");
       }
     } catch (error) {
       console.error("Assign error:", error);
@@ -108,16 +101,10 @@ export default function AdminAssignment() {
   const handleRemove = async (projectId: string) => {
     if (!window.confirm("Remove this supervisor?")) return;
     try {
-      const res = await fetch('http://localhost:1532/api/projects/assign', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          projectId: projectId,
-          supervisorName: "Unassigned",
-          adminName: "Admin"
-        })
-      });
-      if (res.ok) fetchData();
+      try {
+        const res = await apiClient.put('/projects/assign', { projectId: projectId, supervisorName: "Unassigned", adminName: "Admin" });
+        if (res.status >= 200 && res.status < 300) fetchData();
+      } catch (err) { console.error(err); }
     } catch (error) { console.error(error); }
   };
 

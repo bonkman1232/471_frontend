@@ -8,7 +8,7 @@ export interface User {
   phone?: string;
 }
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
+import apiClient from './apiClient';
 
 class AuthService {
   private getAuthToken(): string | null {
@@ -18,34 +18,21 @@ class AuthService {
   async getCurrentUser(): Promise<User | null> {
     try {
       const token = this.getAuthToken();
-      if (!token) {
-        return null;
+      if (!token) return null;
+
+      const response = await apiClient.get('/auth/me');
+      const data = response.data;
+      if (!data || !data.success) {
+        throw new Error(data?.error || 'Failed to fetch user');
       }
-
-      const response = await fetch(`${API_BASE_URL}/auth/me`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          // Token is invalid, clear it
-          localStorage.removeItem('token');
-          return null;
-        }
-        throw new Error(`Failed to fetch user: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to fetch user');
-      }
-
       return data.user;
     } catch (error) {
+      // If 401, clear token
+      // axios errors expose response
+      if ((error as any)?.response?.status === 401) {
+        localStorage.removeItem('token');
+        return null;
+      }
       console.error('Error fetching current user:', error);
       return null;
     }

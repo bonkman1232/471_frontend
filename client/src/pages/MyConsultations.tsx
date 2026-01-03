@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import apiClient from '../services/apiClient';
 import './Dashboard.css';
 
 interface Consultation {
@@ -16,11 +17,8 @@ const MyConsultations: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/consultations/my-consultations", {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-        });
-        const result = await res.json();
-        setData(result);
+        const res = await apiClient.get('/consultations/my-consultations');
+        setData(res.data || []);
       } catch (err) {
         console.error(err);
         alert('Failed to fetch your consultations.');

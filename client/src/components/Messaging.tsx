@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import apiClient from '../services/apiClient';
 
 // ---------------------------------------------------------
 // CONSTANTS
@@ -73,26 +74,17 @@ export default function Messaging({ initialPartner }: MessagingProps) {
     const syncChat = async () => {
       try {
         // A. Fetch Messages
-        const msgRes = await fetch(`http://localhost:1532/api/messages?senderId=${currentUser._id}&receiverId=${activeChat._id}`);
-        const msgData = await msgRes.json();
-        setMessages(msgData);
+        const msgRes = await apiClient.get(`/messages?senderId=${currentUser._id}&receiverId=${activeChat._id}`);
+        setMessages(msgRes.data || []);
 
         // B. Fetch Partner Status (Online/Offline)
         // We use the new route we created
-        const statusRes = await fetch(`http://localhost:1532/api/messages/status/${activeChat._id}`);
-        const statusData = await statusRes.json();
-        setPartnerStatus(statusData.status);
+        const statusRes = await apiClient.get(`/messages/status/${activeChat._id}`);
+        setPartnerStatus(statusRes.data?.status || 'offline');
 
         // C. Mark Messages as "Read" (The WhatsApp Logic)
         // Tell backend: "I (currentUser) am reading messages from (activeChat)"
-        await fetch('http://localhost:1532/api/messages/mark-read', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            readerId: currentUser._id,
-            senderId: activeChat._id
-          })
-        });
+        await apiClient.put('/messages/mark-read', { readerId: currentUser._id, senderId: activeChat._id });
 
       } catch (error) {
         console.error("Sync error:", error);
@@ -122,16 +114,13 @@ export default function Messaging({ initialPartner }: MessagingProps) {
     };
 
     try {
-      const res = await fetch('http://localhost:1532/api/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      
-      if (res.ok) {
-        const savedMessage = await res.json();
+      try {
+        const res = await apiClient.post('/messages', payload);
+        const savedMessage = res.data;
         setMessages([...messages, savedMessage]);
         setNewMessage('');
+      } catch (error) {
+        console.error("Error sending message:", error);
       }
     } catch (error) {
       console.error("Error sending message:", error);

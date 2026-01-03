@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import apiClient from '../services/apiClient';
 
 interface Faculty {
   _id: string;
@@ -28,9 +29,8 @@ export default function StudentView({ onChatStart }: StudentViewProps) {
   useEffect(() => {
     const fetchFaculty = async () => {
       try {
-        const res = await fetch('/api/faculty/all');
-        const data = await res.json();
-        setFacultyList(data);
+        const res = await apiClient.get('/faculty/all');
+        setFacultyList(res.data || []);
       } catch (error) {
         console.error("Failed to fetch faculty:", error);
       } finally {

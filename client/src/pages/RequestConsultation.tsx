@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import apiClient from '../services/apiClient';
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
@@ -20,12 +21,8 @@ const RequestConsultation: React.FC = () => {
   useEffect(() => {
     const fetchFaculty = async () => {
       try {
-        const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
-        const res = await fetch(`${API_BASE}/auth/faculty`, {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
-        const data = await res.json();
-        setFacultyList(data);
+        const res = await apiClient.get('/auth/faculty');
+        setFacultyList(res.data || []);
       } catch (err) {
         console.error(err);
         alert('Failed to fetch faculty.');
@@ -38,27 +35,17 @@ const RequestConsultation: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const token = localStorage.getItem('token');
-      const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
-      const res = await fetch(`${API_BASE}/consultations/request`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          faculty: formData.facultyId,  // Must match backend
-          reason: formData.reason,
-          preferredStart: formData.date
-        })
+      const res = await apiClient.post('/consultations/request', {
+        faculty: formData.facultyId,
+        reason: formData.reason,
+        preferredStart: formData.date
       });
 
-      if (res.ok) {
+      if (res.status >= 200 && res.status < 300) {
         alert('Request sent successfully!');
         navigate('/student-dashboard');
       } else {
-        const err = await res.json();
-        alert(err.message || 'Failed to send request.');
+        alert(res.data?.message || 'Failed to send request.');
       }
     } catch (error) {
       console.error(error);

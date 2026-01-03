@@ -1,19 +1,6 @@
-import axios from 'axios';
+import { apiClient } from './apiClient';
 
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || '/api';
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-});
-
-// Demo mode - set headers for project operations
-api.interceptors.request.use((config: any) => {
-  // Set demo headers for authentication
-  config.headers['x-user-id'] = 'demo-faculty-1'; // Default demo faculty ID
-  config.headers['x-user-role'] = 'faculty'; // Default role
-  console.log('PROJECT API REQUEST - Using demo headers for authentication');
-  return config;
-});
+const DEMO_HEADERS = { 'x-user-id': 'demo-faculty-1', 'x-user-role': 'faculty' };
 
 export interface ProjectEvaluation {
   evaluatedBy: string;
@@ -67,7 +54,7 @@ export const projectApi = {
   testConnection: async () => {
     console.log('🧪 FRONTEND: Testing API connection');
     try {
-      const response = await api.get('/projects/test');
+      const response = await apiClient.get('/projects/test', { headers: DEMO_HEADERS });
       console.log('✅ FRONTEND: API test successful:', response.data);
       return response.data;
     } catch (error) {
@@ -79,7 +66,7 @@ export const projectApi = {
   // Create new project - stores in MongoDB
   createProject: async (projectData: CreateProjectData): Promise<Project> => {
     console.log('🚀 FRONTEND: Sending project to MongoDB:', projectData);
-    const response = await api.post('/projects', projectData);
+    const response = await apiClient.post('/projects', projectData, { headers: DEMO_HEADERS });
     console.log('✅ FRONTEND: Project creation response:', response.data);
 
     // Handle both response formats (direct object or wrapped in success/data)
@@ -92,7 +79,7 @@ export const projectApi = {
   // Get projects for logged-in student
   listMyProjects: async (): Promise<Project[]> => {
     console.log('📥 FRONTEND: Fetching my projects from MongoDB');
-    const response = await api.get('/projects/mine');
+    const response = await apiClient.get('/projects/mine', { headers: DEMO_HEADERS });
     console.log('📥 FRONTEND: Raw response data:', response.data);
     let projects = response.data;
     // Handle different response formats
@@ -111,7 +98,7 @@ export const projectApi = {
   // Get all projects (admin/assessor)
   listAllProjects: async (): Promise<Project[]> => {
     console.log('📥 FRONTEND: Fetching all projects from MongoDB');
-    const response = await api.get('/projects');
+    const response = await apiClient.get('/projects', { headers: DEMO_HEADERS });
     console.log('📥 FRONTEND: Raw response data:', response.data);
     let projects = response.data;
     // Handle different response formats
@@ -130,7 +117,7 @@ export const projectApi = {
   // Create project as faculty (with auto-assignment)
   createProjectAsFaculty: async (projectData: CreateProjectData): Promise<Project> => {
     console.log('🚀 FRONTEND: Faculty creating project:', projectData);
-    const response = await api.post('/projects', projectData);
+    const response = await apiClient.post('/projects', projectData, { headers: DEMO_HEADERS });
     console.log('✅ FRONTEND: Faculty project creation response:', response.data);
     return response.data.data;
   },
@@ -138,7 +125,7 @@ export const projectApi = {
   // Set current faculty as supervisor
   setMeAsSupervisor: async (projectId: string): Promise<Project> => {
     console.log('👨‍🏫 FRONTEND: Setting self as supervisor for project:', projectId);
-    const response = await api.patch(`/projects/${projectId}/supervisor/me`);
+    const response = await apiClient.patch(`/projects/${projectId}/supervisor/me`, undefined, { headers: DEMO_HEADERS });
     console.log('✅ FRONTEND: Supervisor assignment response:', response.data);
     return response.data.data;
   },
@@ -146,7 +133,7 @@ export const projectApi = {
   // Evaluate project (faculty only)
   evaluateProject: async (projectId: string, evaluationData: ProjectEvaluationData): Promise<Project> => {
     console.log('📊 FRONTEND: Evaluating project:', projectId, evaluationData);
-    const response = await api.patch(`/projects/${projectId}/evaluate`, evaluationData);
+    const response = await apiClient.patch(`/projects/${projectId}/evaluate`, evaluationData, { headers: DEMO_HEADERS });
     console.log('✅ FRONTEND: Project evaluation response:', response.data);
     return response.data.data;
   }

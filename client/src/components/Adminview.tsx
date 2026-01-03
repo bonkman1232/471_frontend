@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import apiClient from '../services/apiClient';
 
 const AdminView = () => {
   const [projects, setProjects] = useState<any[]>([]);
@@ -16,9 +17,13 @@ const AdminView = () => {
   const fetchProjects = async () => {
     try {
       // Fetching all projects via search endpoint (empty query = all)
-      const res = await fetch('http://localhost:1532/api/projects/search');
-      const data = await res.json();
-      setProjects(data);
+      try {
+        const res = await apiClient.get('/projects/search');
+        setProjects(res.data || []);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+      }
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -29,23 +34,18 @@ const AdminView = () => {
     if (!newSupervisor) return alert("Please enter a supervisor name");
 
     try {
-      const res = await fetch('http://localhost:1532/api/projects/assign', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          projectId: projectId,
-          supervisorName: newSupervisor,
-          adminId: "admin_001" // Mock Admin ID
-        })
-      });
-
-      if (res.ok) {
-        alert("✅ Supervisor Assigned Successfully");
-        setNewSupervisor('');
-        setSelectedProject(null);
-        fetchProjects(); // Refresh list
-      } else {
-        alert("❌ Assignment Failed");
+      try {
+        const res = await apiClient.put('/projects/assign', { projectId: projectId, supervisorName: newSupervisor, adminId: "admin_001" });
+        if (res.status >= 200 && res.status < 300) {
+          alert("✅ Supervisor Assigned Successfully");
+          setNewSupervisor('');
+          setSelectedProject(null);
+          fetchProjects();
+        } else {
+          alert("❌ Assignment Failed");
+        }
+      } catch (err) {
+        alert("Server Error");
       }
     } catch (err) {
       alert("Server Error");

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import apiClient from '../services/apiClient';
 import QRScanner from './QRScanner';
 import { MapPin, QrCode, Search, Navigation } from 'lucide-react';
 
@@ -34,9 +35,9 @@ export default function LocationFinder() {
     
     setLoading(true);
     try {
-      const res = await fetch(`/api/locations/qr/${encodeURIComponent(searchTerm.trim())}`);
-      if (res.ok) {
-        const location = await res.json();
+      const res = await apiClient.get(`/locations/qr/${encodeURIComponent(searchTerm.trim())}`);
+      const location = res.data;
+      if (location) {
         setScannedLocation(location);
       } else {
         alert('Location not found');

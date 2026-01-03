@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import apiClient from '../services/apiClient';
 import { useNavigate } from 'react-router-dom';
 import type { RegisterData, UserRole, FormErrors } from '../types/auth';
 import { useAuth } from '../contexts/AuthContext';
@@ -120,26 +121,18 @@ const Register: React.FC = () => {
     
     try {
       const { confirmPassword, ...submitData } = formData;
-      const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
+      const res = await apiClient.post('/auth/register', submitData);
+      const data = res.data;
 
-      const response = await fetch(`${API_BASE}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submitData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Auto-login after successful registration
+      if (data && data.user && data.token) {
         login(data.user, data.token);
         navigate('/dashboard');
       } else {
-        setErrors({ ...errors, general: data.message || "Registration failed" });
+        setErrors({ ...errors, general: data?.message || "Registration failed" });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error during registration:", error);
-      setErrors({ ...errors, general: "Server error. Please try again later." });
+      setErrors({ ...errors, general: error?.response?.data?.message || "Server error. Please try again later." });
     } finally {
       setIsLoading(false);
     }

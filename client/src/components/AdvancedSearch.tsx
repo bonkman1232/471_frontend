@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import apiClient from '../services/apiClient';
 
 // 1. INTERFACES
 interface Project {
@@ -28,9 +29,12 @@ export default function AdvancedSearch() {
         if (statusFilter) params.append('status', statusFilter);
         if (deptFilter) params.append('department', deptFilter);
 
-        const res = await fetch(`http://localhost:1532/api/projects/search?${params.toString()}`);
-        const data = await res.json();
-        setProjects(data);
+        try {
+          const res = await apiClient.get(`/projects/search?${params.toString()}`);
+          setProjects(res.data || []);
+        } catch (error) {
+          console.error("Search failed:", error);
+        }
       } catch (error) {
         console.error("Search failed:", error);
       } finally {

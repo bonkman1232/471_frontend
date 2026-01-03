@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import apiClient from '../services/apiClient';
 import { useNavigate } from 'react-router-dom';
 
 const AdminLogin: React.FC = () => {
@@ -12,34 +13,23 @@ const AdminLogin: React.FC = () => {
     setErrorMsg(''); // Reset error state
 
     try {
-      // Use API base from env when available
-      const API_BASE = (import.meta as any).env?.VITE_API_URL || '/api';
-      // Ensure the endpoint matches your server.js setup
-      const response = await fetch(`${API_BASE}/auth/admin-login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ universityId: adminId, password }),
-      });
+      const res = await apiClient.post('/auth/admin-login', { universityId: adminId, password });
+      const data = res.data;
 
-      const data = await response.json();
-
-      if (response.ok && data.user && data.token) {
-        // Strict role check for 'administrator'
+      if (data && data.user && data.token) {
         if (data.user.roles.includes('administrator')) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
-          
-          // Must match the path defined in App.tsx
           navigate('/admin-dashboard');
         } else {
           setErrorMsg("Access Denied: You do not have Administrative privileges.");
         }
       } else {
-        setErrorMsg(data.message || "Invalid Admin Credentials");
+        setErrorMsg(data?.message || "Invalid Admin Credentials");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Admin Login network error:", error);
-      setErrorMsg("Network error: Is the server running on Port 5000?");
+      setErrorMsg(error?.response?.data?.message || "Network error: Is the server running?");
     }
   };
 

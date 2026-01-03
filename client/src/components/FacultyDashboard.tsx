@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './Dashboard.css';
+import apiClient from '../services/apiClient';
 
 // --- 🟢 ADDED: NEW MODULE IMPORTS ---
 import Messaging from "./Messaging";
@@ -37,11 +38,12 @@ export default function FacultyDashboard() {
 
   const fetchRequests = async () => {
     try {
-      const response = await fetch('/api/consultations/my-consultations', {
-        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-      });
-      const data = await response.json();
-      setRequests(data);
+      try {
+        const response = await apiClient.get('/consultations/my-consultations');
+        setRequests(response.data || []);
+      } catch (err) {
+        console.error("Failed to fetch requests", err);
+      }
     } catch (err) {
       console.error("Failed to fetch requests", err);
     }
@@ -51,30 +53,24 @@ export default function FacultyDashboard() {
   const fetchSettings = async () => {
     if (user && user.id) {
       try {
-        const res = await fetch(`/api/faculty/${user.id}`);
-        if (res.ok) {
-          const data = await res.json();
-          if(data.availability) setAvailability(data.availability);
-          if(data.capacity) setCapacity(data.capacity);
-          if(data.slots) setSlots(data.slots);
-        }
+        try {
+          const res = await apiClient.get(`/faculty/${user.id}`);
+          const data = res.data;
+          if (data?.availability) setAvailability(data.availability);
+          if (data?.capacity) setCapacity(data.capacity);
+          if (data?.slots) setSlots(data.slots);
+        } catch (err) { console.error("Error loading settings", err); }
       } catch (err) { console.error("Error loading settings", err); }
     }
   };
 
   const handleSaveSettings = async () => {
     try {
-      const res = await fetch('/api/faculty/update', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          universityId: user.id,
-          availability,
-          capacity: Number(capacity),
-          slots
-        })
-      });
-      if (res.ok) alert("✅ Settings Saved Successfully!");
+      try {
+        const payload = { universityId: user.id, availability, capacity: Number(capacity), slots };
+        const res = await apiClient.put('/faculty/update', payload);
+        if (res.status >= 200 && res.status < 300) alert("✅ Settings Saved Successfully!");
+      } catch (err) { alert("Error saving settings"); }
     } catch (err) { alert("Error saving settings"); }
   };
 

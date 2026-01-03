@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import apiClient from '../services/apiClient';
 import "./QRScanner.css";
 
 interface Location {
@@ -104,14 +105,13 @@ function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
     try {
       setError("");
       // Fetch location data from API
-      const res = await fetch(`/api/locations/qr/${encodeURIComponent(manualInput.trim())}`);
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "Location not found");
+      try {
+        const res = await apiClient.get(`/locations/qr/${encodeURIComponent(manualInput.trim())}`);
+        onScanSuccess(res.data);
+      } catch (err: any) {
+        const msg = err?.response?.data?.error || err.message || 'Location not found';
+        throw new Error(msg);
       }
-
-      const location = await res.json();
-      onScanSuccess(location);
       setManualInput("");
     } catch (err: any) {
       setError(`Location not found: ${manualInput}. ${err.message}`);
@@ -233,16 +233,13 @@ function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
 
     try {
       // Fetch location data from API
-      const res = await fetch(`/api/locations/qr/${encodeURIComponent(qrCodeRef)}`);
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData.error || "Location not found");
+      try {
+        const res = await apiClient.get(`/locations/qr/${encodeURIComponent(qrCodeRef)}`);
+        onScanSuccess(res.data);
+      } catch (err: any) {
+        const msg = err?.response?.data?.error || err.message || 'Location not found';
+        setError(`Location not found for QR code: ${qrCodeRef}. ${msg}`);
       }
-
-      const location = await res.json();
-
-      // Call success callback
-      onScanSuccess(location);
     } catch (err: any) {
       setError(`Location not found for QR code: ${qrCodeRef}. ${err.message}`);
       // Don't auto-restart, let user decide

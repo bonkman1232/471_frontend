@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import apiClient from '../services/apiClient';
 import './Dashboard.css';
 
 interface Consultation {
@@ -14,11 +15,13 @@ const ConsultationRequests: React.FC = () => {
 
   const fetchRequests = async () => {
     try {
-      const res = await fetch('/api/consultations/my-consultations', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      const data = await res.json();
-      setRequests(data);
+      try {
+        const res = await apiClient.get('/consultations/my-consultations');
+        setRequests(res.data || []);
+      } catch (err) {
+        console.error(err);
+        alert('Failed to fetch requests.');
+      }
     } catch (err) {
       console.error(err);
       alert('Failed to fetch requests.');
@@ -29,27 +32,17 @@ const ConsultationRequests: React.FC = () => {
 
   const handleAction = async (id: string, status: string) => {
     try {
-      const res = await fetch(`/api/consultations/${id}`, {
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}` 
-        },
-        body: JSON.stringify({ status })
-      });
+      try {
+        const res = await apiClient.put(`/consultations/${id}`, { status });
+        const updatedConsultation = res.data;
 
-      if (!res.ok) {
-        const err = await res.json();
-        alert(err.message);
-        return;
+        // Optimistically update frontend state
+        setRequests(prev => prev.map(r => r._id === updatedConsultation._id ? updatedConsultation : r));
+      } catch (error) {
+        console.error(error);
+        alert('Failed to update consultation status.');
       }
-
-      const updatedConsultation = await res.json();
-
-    // Optimistically update frontend state
-      setRequests(prev =>
-        prev.map(r => r._id === updatedConsultation._id ? updatedConsultation : r)
-      );
+    
 
     } catch (error) {
       console.error(error);

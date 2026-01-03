@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import apiClient from '../services/apiClient';
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 
@@ -10,15 +11,11 @@ const AdminLogin: React.FC = () => {
   const handleAdminSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/auth/admin-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ universityId: adminId, password }),
-      });
+      try {
+        const res = await apiClient.post('/auth/admin-login', { universityId: adminId, password });
+        const data = res.data;
 
-      const data = await response.json();
-
-      if (response.ok && data.user && data.token) {
+        if (data && data.user && data.token) {
         // Verify the user actually has the admin role before proceeding
         if (data.user.roles.includes('administrator')) {
           localStorage.setItem('token', data.token);
@@ -28,12 +25,12 @@ const AdminLogin: React.FC = () => {
           alert("Access Denied: You do not have Administrative privileges.");
         }
       } else {
-        alert(data.message || "Invalid Admin Credentials");
+        alert(data?.message || "Invalid Admin Credentials");
       }
-    } catch (error) {
-      console.error("Admin Login error:", error);
-      alert("Server error.");
-    }
+      } catch (error) {
+        console.error("Admin Login error:", error);
+        alert("Server error.");
+      }
   };
 
   return (
