@@ -121,7 +121,15 @@ const Register: React.FC = () => {
     
     try {
       const { confirmPassword, ...submitData } = formData;
-      const res = await apiClient.post('/auth/register', submitData);
+      // Normalize roles to the backend-expected enum format (array of uppercase values)
+      const payload: any = { ...submitData };
+      if (payload.roles) {
+        payload.roles = Array.isArray(payload.roles)
+          ? payload.roles.map((r: any) => String(r).toUpperCase())
+          : [String(payload.roles).toUpperCase()];
+      }
+
+      const res = await apiClient.post('/auth/register', payload);
       const data = res.data;
 
       if (data && data.user && data.token) {
