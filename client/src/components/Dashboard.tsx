@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { TrendingUp, FolderKanban, Calendar, CheckCircle, Clock, AlertCircle, Users } from 'lucide-react';
 import type { PageView, UserRole, Project, Evaluation } from '../types';
+import { evaluationApi } from '../services/evaluationApi';
 
 interface DashboardProps {
   userRole: UserRole;
@@ -16,6 +18,37 @@ export function Dashboard({ userRole, onNavigate, onViewProject, projects, evalu
   const completedEvaluations = evaluations.filter((e) => e.status === 'Submitted').length;
 
   const recentProjects = projects.slice(0, 5);
+
+  const [avgScore, setAvgScore] = useState<number | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const allEvals = await evaluationApi.list();
+        const submitted = allEvals.filter((e) => e.status === 'Submitted' && typeof e.totalScore === 'number');
+        if (submitted.length > 0) {
+          const avg = submitted.reduce((s, e) => s + e.totalScore, 0) / submitted.length;
+          if (mounted) setAvgScore(Number(avg.toFixed(1)));
+          return;
+        }
+      } catch (err) {
+        // ignore and fallback to prop-based calculation
+      }
+
+      // Fallback: compute from passed `evaluations` prop
+      const submittedProp = evaluations.filter((e) => e.status === 'Submitted' && typeof e.totalScore === 'number');
+      if (submittedProp.length > 0) {
+        const avg = submittedProp.reduce((s, e) => s + e.totalScore, 0) / submittedProp.length;
+        if (mounted) setAvgScore(Number(avg.toFixed(1)));
+      } else {
+        if (mounted) setAvgScore(null);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [evaluations]);
 
   return (
     <div className="space-y-6">
